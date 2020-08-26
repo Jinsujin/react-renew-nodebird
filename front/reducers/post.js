@@ -14,11 +14,15 @@ export const initialState = {
       Images: [
         {
           src:
-            "https://image.laftel.net/items/thumbs/large/3f2aaebd-eda4-4b84-a764-f940dfca1413.jpg"
+            "https://image.laftel.net/items/thumbs/large/f838ac8f-39c8-4f09-be41-3d3331717d92.jpg"
         },
         {
           src:
             "https://image.laftel.net/items/thumbs/large/3f2aaebd-eda4-4b84-a764-f940dfca1413.jpg"
+        },
+        {
+          src:
+            "https://image.laftel.net/items/thumbs/large/5f177f77-79c2-43d6-ae35-d63bb44ea81e.jpg"
         }
       ],
       Comments: [
