@@ -19,10 +19,6 @@ export const initialState = {
         {
           src:
             "https://image.laftel.net/items/thumbs/large/3f2aaebd-eda4-4b84-a764-f940dfca1413.jpg"
-        },
-        {
-          src:
-            "https://image.laftel.net/items/thumbs/large/3f2aaebd-eda4-4b84-a764-f940dfca1413.jpg"
         }
       ],
       Comments: [
