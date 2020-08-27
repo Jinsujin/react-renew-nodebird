@@ -1,21 +1,25 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Form, Button, Input } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { addPost } from "../reducers/post";
+import useInput from "../hooks/useInput";
 
 const PostForm = () => {
+  const { imagePaths, addPostDone } = useSelector(state => state.post);
   const dispatch = useDispatch();
   const imageInputEl = useRef(null); // 실제 DOM 에 접근하기 위함
-  const { imagePaths } = useSelector(state => state.post);
-  const [text, setText] = useState("");
-  const onChangeText = useCallback(e => {
-    setText(e.target.value);
-  }, []);
+  const [text, onChangeText, setText] = useInput("");
+
+  useEffect(() => {
+    if (addPostDone) {
+      setText("");
+    }
+  }, [addPostDone]);
+
   const onSubmit = useCallback(() => {
     console.log("submit--");
-    dispatch(addPost);
-    setText("");
-  }, []);
+    dispatch(addPost(text));
+  }, [text]);
 
   // 버튼 눌러서 사진 업로드창 띄우기
   const onClickImageUpload = useCallback(() => {
