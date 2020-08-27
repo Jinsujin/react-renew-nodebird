@@ -1,3 +1,5 @@
+import shortId from "shortid";
+
 export const initialState = {
   logInLoading: false, // 로그인 시도중 - true 일때 로딩
   logInDone: false,
@@ -11,6 +13,10 @@ export const initialState = {
   signUpDone: false,
   signUpError: null,
 
+  changeNicknameLoading: false, // 닉네임 변경 시도중
+  changeNicknameDone: false,
+  changeNicknameError: null,
+
   me: null, // 내 정보
 
   signUpData: {},
@@ -19,11 +25,19 @@ export const initialState = {
 
 const dummyUser = data => ({
   ...data,
-  nickname: "jinsu",
+  nickname: "제로초",
   id: 1,
-  posts: [],
-  Followings: [],
-  Followers: []
+  Posts: [{ id: 1 }],
+  Followings: [
+    { nickname: "부기초" },
+    { nickname: "Chanho Lee" },
+    { nickname: "neue zeal" }
+  ],
+  Followers: [
+    { nickname: "부기초" },
+    { nickname: "Chanho Lee" },
+    { nickname: "neue zeal" }
+  ]
 });
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
@@ -37,6 +51,10 @@ export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
 export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+
+export const CHANGE_NICKNAME_REQUEST = "CHANGE_NICKNAME_REQUEST";
+export const CHANGE_NICKNAME_SUCCESS = "CHANGE_NICKNAME_SUCCESS";
+export const CHANGE_NICKNAME_FAILURE = "CHANGE_NICKNAME_FAILURE";
 
 export const FOLLOW_REQUEST = "FOLLOW_REQUEST";
 export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS";
@@ -136,12 +154,31 @@ const reducer = (state = initialState, action) => {
         signUpLoading: false,
         signUpDone: true
       };
-
     case SIGN_UP_FAILURE:
       return {
         ...state,
         signUpLoading: false,
         signUpError: action.error
+      };
+
+    case CHANGE_NICKNAME_REQUEST:
+      return {
+        ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null
+      };
+    case CHANGE_NICKNAME_SUCCESS:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true
+      };
+    case CHANGE_NICKNAME_FAILURE:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error
       };
 
     default:

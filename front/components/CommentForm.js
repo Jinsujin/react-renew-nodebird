@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Button, Form, Input } from "antd";
 import useInput from "../hooks/useInput";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_COMMENT_REQUEST } from "../reducers/post";
+import { ADD_COMMENT_REQUEST, addComment } from "../reducers/post";
 
 /**
  * post.id 에 댓글을 달아야 하기때문에 post 를 prop으로 가져옴
@@ -11,7 +11,9 @@ import { ADD_COMMENT_REQUEST } from "../reducers/post";
 
 const CommentForm = ({ post }) => {
   const id = useSelector(state => state.user.me?.id);
-  const { addCommentDone } = useSelector(state => state.post);
+  const { addCommentDone, addCommentLoading } = useSelector(
+    state => state.post
+  );
   const dispatch = useDispatch();
   const [commentText, onChangeCommentText, setCommentText] = useInput("");
 
@@ -26,7 +28,7 @@ const CommentForm = ({ post }) => {
 
     dispatch({
       type: ADD_COMMENT_REQUEST,
-      data: { content: commentText, postId: post.id, userId, id }
+      data: { content: commentText, postId: post.id, userId: id }
     });
   }, [commentText, id]);
 
@@ -38,7 +40,7 @@ const CommentForm = ({ post }) => {
           onChange={onChangeCommentText}
           rows={4}
         />
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={addCommentLoading}>
           삐약
         </Button>
       </Form.Item>

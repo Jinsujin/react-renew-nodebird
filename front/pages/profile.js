@@ -8,6 +8,10 @@ import { useSelector } from "react-redux";
 const Profile = () => {
   const { me } = useSelector(state => state.user);
 
+  if (!me) {
+    return null;
+  }
+
   return (
     <>
       <Head>

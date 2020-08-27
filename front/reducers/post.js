@@ -1,3 +1,5 @@
+import shortId from "shortid";
+
 /**
  * User, Images, Comments 대문자인 이유
  * 시퀄라이즈에서 어떤정보와 다른정보가 관계가 있으면 합쳐줌 -> 이때 대문자가 되어서 나옴
@@ -75,16 +77,25 @@ export const addComment = data => ({
   data
 });
 
-const dummyPost = {
-  id: 2,
-  content: "더미데이터",
+const dummyPost = data => ({
+  id: shortId.generate(),
+  content: data,
   User: {
     id: 1,
     nickname: "jinsu"
   },
   Images: [],
   Comments: []
-};
+});
+
+const dummyComment = data => ({
+  id: shortId.generate(),
+  content: data,
+  User: {
+    id: 1,
+    nickname: "jinsu"
+  }
+});
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -95,10 +106,10 @@ const reducer = (state = initialState, action) => {
         addPostDone: false,
         addPostError: null
       };
-    case ADD_POST_SUCESS:
+    case ADD_POST_SUCCESS:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
         addPostLoading: false,
         addPostDone: true
       };
@@ -116,10 +127,19 @@ const reducer = (state = initialState, action) => {
         addCommentDone: false,
         addCommentError: null
       };
-    case ADD_COMMENT_SUCESS:
+    case ADD_COMMENT_SUCCESS:
+      // data: { content: commentText, postId: post.id, userId: id }
+      const postIndex = state.mainPosts.findIndex(
+        v => v.id === action.data.postId
+      );
+      const post = { ...state.mainPosts[postIndex] };
+      post.Comments = [dummyComment(action.data.content), ...post.Comments];
+      const mainPosts = [...state.mainPosts];
+      mainPosts[postIndex] = post;
+
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        mainPosts,
         addCommentLoading: false,
         addCommentDone: true
       };

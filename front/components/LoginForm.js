@@ -25,7 +25,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
 
   const onChangeEmail = useCallback(e => {
-    setId(e.target.value);
+    setEmail(e.target.value);
   }, []);
 
   const onChangePassword = useCallback(e => {

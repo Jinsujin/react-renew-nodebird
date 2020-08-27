@@ -28,13 +28,14 @@ function* addPost(action) {
     // const result = yield call(addPostAPI, action.data);
     yield delay(1000);
     yield put({
-      type: ADD_POST_SUCCESS
+      type: ADD_POST_SUCCESS,
       //   data: result.data // 성공 결과
+      data: action.data // 더미 데이터 테스트
     });
   } catch (e) {
     yield put({
       type: ADD_POST_FAILURE,
-      data: e.response.data // 실패 결과
+      error: e.response.data // 실패 결과
     });
   }
 }
@@ -54,8 +55,9 @@ function* addComment(action) {
     // const result = yield call(addCommentAPI, action.data);
     yield delay(1000);
     yield put({
-      type: ADD_COMMENT_SUCCESS
+      type: ADD_COMMENT_SUCCESS,
       //   data: result.data // 성공 결과
+      data: action.data
     });
   } catch (e) {
     yield put({
