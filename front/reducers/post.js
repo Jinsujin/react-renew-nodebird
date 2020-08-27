@@ -44,16 +44,36 @@ export const initialState = {
   // 이미지 경로들
   imagePaths: [],
   // 게시글 추가가 완료되었을때 true
-  postAdded: false
+
+  addPostLoading: false, // post 등록중인지
+  addPostDone: false,
+  addPostError: null,
+
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null
 };
 
 /**
  * 액션 생성 함수
  */
-const ADD_POST = "ADD_POST";
-export const addPost = {
-  type: ADD_POST
-};
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const addPost = data => ({
+  type: ADD_POST_REQUEST,
+  data
+});
+
+export const addComment = data => ({
+  type: ADD_COMMENT_REQUEST,
+  data
+});
 
 const dummyPost = {
   id: 2,
@@ -68,13 +88,47 @@ const dummyPost = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_POST:
+    case ADD_POST_REQUEST:
+      return {
+        ...state,
+        addPostLoading: true,
+        addPostDone: false,
+        addPostError: null
+      };
+    case ADD_POST_SUCESS:
       return {
         ...state,
         mainPosts: [dummyPost, ...state.mainPosts],
-        postAdded: true
+        addPostLoading: false,
+        addPostDone: true
+      };
+    case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostLoading: false,
+        addPostError: action.error
       };
 
+    case ADD_COMMENT_REQUEST:
+      return {
+        ...state,
+        addCommentLoading: true,
+        addCommentDone: false,
+        addCommentError: null
+      };
+    case ADD_COMMENT_SUCESS:
+      return {
+        ...state,
+        mainPosts: [dummyPost, ...state.mainPosts],
+        addCommentLoading: false,
+        addCommentDone: true
+      };
+    case ADD_COMMENT_FAILURE:
+      return {
+        ...state,
+        addCommentLoading: false,
+        addCommentError: action.error
+      };
     default:
       return state;
   }

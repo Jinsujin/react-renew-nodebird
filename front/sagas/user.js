@@ -8,6 +8,17 @@ import {
   takeLatest
 } from "redux-saga/effects";
 import axios from "axios";
+import {
+  LOG_IN_REQUEST,
+  LOG_IN_SUCCESS,
+  LOG_IN_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
+  LOG_OUT_FAILURE,
+  SIGN_UP_REQUEST,
+  SIGN_UP_SUCCESS,
+  SIGN_UP_FAILURE
+} from "../reducers/user";
 
 /************** Login ****************/
 /**
@@ -35,14 +46,14 @@ function* logIn(action) {
     // const result = yield call(logInAPI, action.data);
 
     yield put({
-      type: "LOG_IN_SUCCESS",
+      type: LOG_IN_SUCCESS,
       // data: result.data // 성공 결과
       data: action.data // 더미 데이터 테스트
     });
   } catch (e) {
     yield put({
-      type: "LOG_IN_FAILURE",
-      data: e.response.data // 실패 결과
+      type: LOG_IN_FAILURE,
+      error: e.response.data // 실패 결과
     });
   }
 }
@@ -54,7 +65,7 @@ function* logIn(action) {
  * while 로 감싸줘야, 계속해서 액션을 받아 처리할 수 있다
  */
 function* watchLogIN() {
-  yield takeEvery("LOG_IN_REQUEST", logIn);
+  yield takeEvery(LOG_IN_REQUEST, logIn);
 }
 
 /*************** // End Login  ***************/
@@ -71,22 +82,49 @@ function* logOut() {
     // const result = yield call(logOutAPI);
 
     yield put({
-      type: "LOG_OUT_SUCCESS"
+      type: LOG_OUT_SUCCESS
       //   data: result.data // 성공 결과
     });
   } catch (e) {
     yield put({
-      type: "LOG_OUT_FAILURE",
-      data: e.response.data // 실패 결과
+      type: LOG_OUT_FAILURE,
+      error: e.response.data // 실패 결과
     });
   }
 }
 
 function* watchLogOut() {
-  yield takeLatest("LOG_OUT_REQUEST", logOut);
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
 /*************** // End LogOut  ***************/
 
+/************** SignUp ****************/
+function signUpAPI() {
+  return axios.post("/api/signup");
+}
+
+function* signUp() {
+  try {
+    yield delay(1000);
+    // const result = yield call(signUpAPI);
+
+    yield put({
+      type: SIGN_UP_SUCCESS
+      //   data: result.data // 성공 결과
+    });
+  } catch (e) {
+    yield put({
+      type: SIGN_UP_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchSignUp() {
+  yield takeLatest(SIGN_UP_REQUEST, signUp);
+}
+/*************** // End signUp  ***************/
+
 export default function* userSaga() {
-  yield all([fork(watchLogIN), fork(watchLogOut)]);
+  yield all([fork(watchLogIN), fork(watchLogOut), fork(watchSignUp)]);
 }
