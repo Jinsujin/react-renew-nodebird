@@ -64,6 +64,10 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST";
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS";
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE";
 
+// post 에서 변화가 일어날때, user 의 상태를 바꿀수 있는 Action
+export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
+export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
+
 /**
  * Action 생성 함수
  */
@@ -73,21 +77,6 @@ export const loginRequestAction = data => {
     data
   };
 };
-
-// success, fauilure 는 사가에서 호출해(put) 만들어 넣기때문에 필요 없다
-// export const loginSuccessAction = data => {
-//   return {
-//     type: "LOG_IN_SUCESS",
-//     data
-//   };
-// };
-
-// export const loginFailureAction = data => {
-//   return {
-//     type: "LOG_IN_FAILURE",
-//     data
-//   };
-// };
 
 export const logoutRequestAction = () => {
   return {
@@ -180,7 +169,22 @@ const reducer = (state = initialState, action) => {
         changeNicknameLoading: false,
         changeNicknameError: action.error
       };
-
+    case ADD_POST_TO_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: [{ id: action.data }, ...state.me.Posts]
+        }
+      };
+    case REMOVE_POST_OF_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: state.me.Posts.filter(v => v.id !== action.data)
+        }
+      };
     default:
       return state;
   }
