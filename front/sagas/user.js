@@ -65,7 +65,7 @@ function* logIn(action) {
  * while 로 감싸줘야, 계속해서 액션을 받아 처리할 수 있다
  */
 function* watchLogIN() {
-  yield takeEvery(LOG_IN_REQUEST, logIn);
+  yield takeLatest(LOG_IN_REQUEST, logIn);
 }
 
 /*************** // End Login  ***************/

@@ -9,7 +9,7 @@ import AppLayout from "../components/AppLayout";
 const Profile = () => {
   const { me } = useSelector(state => state.user);
 
-  // 로그아웃 했을때
+  // 로그인 안한상태일때는 / 페이지로 이동
   useEffect(() => {
     if (!(me && me.id)) {
       Router.push("/");

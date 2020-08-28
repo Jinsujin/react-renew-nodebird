@@ -7,52 +7,17 @@ import faker from "faker";
  * 시퀄라이즈에서 어떤정보와 다른정보가 관계가 있으면 합쳐줌 -> 이때 대문자가 되어서 나옴
  */
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 1,
-        nickname: "jinsu"
-      },
-      content: "첫번째 게시글 #해시 #리액트",
-      Images: [
-        {
-          id: shortId.generate(),
-          src:
-            "https://image.laftel.net/items/thumbs/large/f838ac8f-39c8-4f09-be41-3d3331717d92.jpg"
-        },
-        {
-          id: shortId.generate(),
-          src:
-            "https://image.laftel.net/items/thumbs/large/3f2aaebd-eda4-4b84-a764-f940dfca1413.jpg"
-        },
-        {
-          id: shortId.generate(),
-          src:
-            "https://image.laftel.net/items/thumbs/large/5f177f77-79c2-43d6-ae35-d63bb44ea81e.jpg"
-        }
-      ],
-      Comments: [
-        {
-          id: shortId.generate(),
-          User: {
-            nickname: "nero"
-          },
-          content: "코멘트 내용입니다"
-        },
-        {
-          id: shortId.generate(),
-          User: {
-            nickname: "hero"
-          },
-          content: "222"
-        }
-      ]
-    }
-  ],
+  mainPosts: [],
   // 이미지 경로들
   imagePaths: [],
   // 게시글 추가가 완료되었을때 true
+
+  // 인피니트 스크롤에서 더이상 불러올 데이터가 없을때
+  hasMorePost: true,
+
+  loadPostsLoading: false, // post 불러오는중인지
+  loadPostsDone: false,
+  loadPostsError: null,
 
   addPostLoading: false, // post 등록중인지
   addPostDone: false,
@@ -67,8 +32,9 @@ export const initialState = {
   addCommentError: null
 };
 
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+// 더미 데이터
+export const generateDummyPost = number =>
+  Array(number)
     .fill()
     .map(() => ({
       id: shortId.generate(),
@@ -79,7 +45,7 @@ initialState.mainPosts = initialState.mainPosts.concat(
       content: faker.lorem.paragraph(),
       Images: [
         {
-          src: faker.image.imageUrl()
+          src: faker.image.image()
         }
       ],
       Comments: [
@@ -91,12 +57,18 @@ initialState.mainPosts = initialState.mainPosts.concat(
           content: faker.lorem.sentence()
         }
       ]
-    }))
-);
+    }));
+
+// initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
 
 /**
  * 액션 생성 함수
  */
+
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
+
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
@@ -142,6 +114,24 @@ const dummyComment = data => ({
 const reducer = (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
+      case LOAD_POSTS_REQUEST:
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
+        break;
+      case LOAD_POSTS_SUCCESS:
+        //action.data : 더미데이터가 들어있고 여기에 기존데이터 draft.mainPosts 와 합침
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        // 게시글 50개 이상이면, 더이상 post 를 가져오지 않는다
+        draft.hasMorePost = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POSTS_FAILURE:
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
+        break;
+
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
