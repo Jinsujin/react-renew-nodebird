@@ -17,7 +17,13 @@ import {
   LOG_OUT_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
-  SIGN_UP_FAILURE
+  SIGN_UP_FAILURE,
+  FOLLOW_REQUEST,
+  FOLLOW_SUCCESS,
+  FOLLOW_FAILURE,
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
+  UNFOLLOW_FAILURE
 } from "../reducers/user";
 
 /************** Login ****************/
@@ -125,6 +131,68 @@ function* watchSignUp() {
 }
 /*************** // End signUp  ***************/
 
+/************** follow ****************/
+function followAPI() {
+  return axios.post("/api/follow");
+}
+
+function* follow(action) {
+  try {
+    yield delay(1000);
+    // logInAPI을 통해 서버에서 요청받은 결과값을 받아올때까지 기다림(call)
+    // const result = yield call(followAPI);
+
+    yield put({
+      type: FOLLOW_SUCCESS,
+      // data: result.data // 성공 결과
+      data: action.data // 사용자 아이디
+    });
+  } catch (e) {
+    yield put({
+      type: FOLLOW_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchFollow() {
+  yield takeLatest(FOLLOW_REQUEST, follow);
+}
+/*************** // End follow  ***************/
+/************** unfollow ****************/
+function unfollowAPI() {
+  return axios.post("/api/unfollow");
+}
+
+function* unfollow(action) {
+  try {
+    yield delay(1000);
+    // const result = yield call(unfollowAPI);
+
+    yield put({
+      type: UNFOLLOW_SUCCESS,
+      data: action.data // 사용자 아이디
+      //   data: result.data // 성공 결과
+    });
+  } catch (e) {
+    yield put({
+      type: UNFOLLOW_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchUnfollow() {
+  yield takeLatest(UNFOLLOW_REQUEST, unfollow);
+}
+/*************** // End follow  ***************/
+
 export default function* userSaga() {
-  yield all([fork(watchLogIN), fork(watchLogOut), fork(watchSignUp)]);
+  yield all([
+    fork(watchLogIN),
+    fork(watchLogOut),
+    fork(watchSignUp),
+    fork(watchFollow),
+    fork(watchUnfollow)
+  ]);
 }
