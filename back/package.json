@@ -1,0 +1,16 @@
+{
+  "name": "react-nodebird-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jinsu",
+  "license": "ISC",
+  "dependencies": {
+    "mysql2": "^2.1.0",
+    "sequelize": "^6.3.4",
+    "sequelize-cli": "^6.2.0"
+  }
+}
