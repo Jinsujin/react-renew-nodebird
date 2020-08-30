@@ -5,6 +5,7 @@ import { Form, Input, Checkbox, Button } from "antd";
 import useInput from "../hooks/useInput";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { SIGN_UP_REQUEST } from "../reducers/user";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -46,7 +47,7 @@ const Signup = () => {
     }
     console.log(email, nickname, password);
     dispatch({
-      style: SIGN_UP_REQUEST,
+      type: SIGN_UP_REQUEST,
       data: { email, password, nickname }
     });
   }, [email, password, passwordCheck, term]);
