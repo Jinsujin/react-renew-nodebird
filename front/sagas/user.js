@@ -105,7 +105,7 @@ function* watchLogIN() {
 /*************** // End Login  ***************/
 /************** Logout ****************/
 function logOutAPI() {
-  return axios.post("/user/logout");
+  return axios.get("/user/logout");
 }
 
 function* logOut() {
@@ -141,7 +141,6 @@ function* signUp(action) {
 
     yield put({
       type: SIGN_UP_SUCCESS
-      //   data: result.data // 성공 결과
     });
   } catch (e) {
     yield put({

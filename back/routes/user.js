@@ -123,7 +123,7 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     await User.create({
       // User table 에 데이터를 넣음
-      email: req.body.nickname,
+      email: req.body.email,
       nickname: req.body.nickname,
       password: hashedPassword
     });
