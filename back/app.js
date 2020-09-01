@@ -4,6 +4,7 @@ const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const app = express();
+const passportConfig = require("./passport");
 
 db.sequelize
   .sync()
@@ -11,6 +12,8 @@ db.sequelize
     console.log("db 연결 성공");
   })
   .catch(console.error);
+
+passportConfig();
 
 /**
  * user: express 서버에 기능(미들웨어)을 장착.

@@ -33,7 +33,7 @@ import {
  * 주의- 제너레이터가 아님!
  */
 function logInAPI(data) {
-  return axios.post("/api/login", data);
+  return axios.post("/user/login", data);
 }
 
 /**
@@ -45,16 +45,12 @@ function logInAPI(data) {
  */
 function* logIn(action) {
   try {
-    console.log("saga - logIn start");
-    // 실제 서버를 대신해서 테스트
-    yield delay(1000);
-    // logInAPI을 통해 서버에서 요청받은 결과값을 받아올때까지 기다림(call)
-    // const result = yield call(logInAPI, action.data);
+    // yield delay(1000);
+    const result = yield call(logInAPI, action.data);
 
     yield put({
       type: LOG_IN_SUCCESS,
-      // data: result.data // 성공 결과
-      data: action.data // 더미 데이터 테스트
+      data: result.data // 성공 결과
     });
   } catch (e) {
     yield put({
@@ -78,7 +74,7 @@ function* watchLogIN() {
 
 /************** Logout ****************/
 function logOutAPI() {
-  return axios.post("/api/logout");
+  return axios.post("/user/logout");
 }
 
 function* logOut() {
@@ -107,7 +103,7 @@ function* watchLogOut() {
 /************** SignUp ****************/
 // data: {email, password, nickname}
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 
 function* signUp(action) {

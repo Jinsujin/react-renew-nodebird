@@ -3,6 +3,34 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const { User } = require("../models"); // 구조분해 할당으로 db.User 를 가져옴
 const router = express.Router();
+const passport = require("passport");
+
+/**
+ * 로그인
+ * POST /user/login
+ */
+// authenticate(서버에러, 성공객체, 인포) -- done()으로 보낸 인자값들이 여기로 들어옴
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+    if (info) {
+      // 클라이언트 에러
+      return res.status(401).send(info.reason);
+    }
+    // passport 로그인
+    return req.login(user, async loginErr => {
+      if (loginErr) {
+        console.error(loginErr);
+        return next(loginErr);
+      }
+      // 로그인 성공시, 사용자 정보를 프론트로 넘겨줌
+      return res.json(user);
+    });
+  })(req, res, next);
+});
 
 /**
  * 회원가입 요청
