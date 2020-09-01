@@ -8,6 +8,48 @@ const { User, Post } = require("../models"); // 구조분해 할당으로 db.Use
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 /**
+ * GET /user
+ * 브라우저에서 새로고침 할때마다 유저정보를 불러온다
+ */
+router.get("/", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const fullUserWithoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        // 특정 컬럼의 데이터만 가져오기
+        // attributes: ["id", "nickname", "email"],
+        attributes: {
+          exclude: ["password"] // 전체 데이터중 비밀번호 빼고 가져오기
+        },
+        include: [
+          {
+            // hasMany 이기때문에 model:Post 가 복수형이 되어 me.Posts 가 된다
+            model: Post,
+            attributes: ["id"]
+          },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id"]
+          },
+          {
+            model: User,
+            as: "Followers",
+            attributes: ["id"]
+          }
+        ]
+      });
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+/**
  * 로그인
  * POST /user/login
  */
@@ -39,15 +81,18 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
         include: [
           {
             // hasMany 이기때문에 model:Post 가 복수형이 되어 me.Posts 가 된다
-            model: Post
+            model: Post,
+            attributes: ["id"]
           },
           {
             model: User,
-            as: "Followings"
+            as: "Followings",
+            attributes: ["id"]
           },
           {
             model: User,
-            as: "Followers"
+            as: "Followers",
+            attributes: ["id"]
           }
         ]
       });

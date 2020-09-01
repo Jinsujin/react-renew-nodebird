@@ -2,6 +2,10 @@ import shortId from "shortid";
 import produce from "immer";
 
 export const initialState = {
+  loadUserLoading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
+
   followLoading: false, // 팔로우
   followDone: false,
   followError: null,
@@ -32,22 +36,9 @@ export const initialState = {
   loginData: {}
 };
 
-const dummyUser = data => ({
-  ...data,
-  nickname: "제로초",
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [
-    { nickname: "부기초" },
-    { nickname: "Chanho Lee" },
-    { nickname: "neue zeal" }
-  ],
-  Followers: [
-    { nickname: "부기초" },
-    { nickname: "Chanho Lee" },
-    { nickname: "neue zeal" }
-  ]
-});
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
+export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
+export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -96,6 +87,20 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserDone = false;
+        draft.loadUserError = null;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.me = action.data;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
       case FOLLOW_REQUEST:
         draft.followLoading = true;
         draft.followError = null;

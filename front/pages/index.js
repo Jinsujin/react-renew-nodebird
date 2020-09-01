@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import PostCard from "../components/PostCard";
 import PostForm from "../components/PostForm";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
+import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,9 @@ const Home = () => {
 
   // 컴포넌트 마운트시, 10개 불러와 초기값으로 넣어줌
   useEffect(() => {
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST // 로그인정보 불러오기
+    });
     dispatch({
       type: LOAD_POSTS_REQUEST
     });

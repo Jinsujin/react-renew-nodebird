@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const postRouter = require("./routes/post");
+const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const app = express();
@@ -9,6 +10,7 @@ const passportConfig = require("./passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const morgan = require("morgan");
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ passportConfig();
  * user: express 서버에 기능(미들웨어)을 장착.
  * front 에서 보낸 데이터를 req.body 에 넣어준다
  */
+app.use(morgan("dev"));
 app.use(
   cors({
     origin: true, // * 모든 주소에서의 요청 허용. TODO: 서비스 도메인으로 변경할것
@@ -52,12 +55,9 @@ app.get("/", (req, res) => {
   res.send("hello express");
 });
 
-app.get("/api", (req, res) => {
-  res.send("api");
-});
-
 // postRouter 에서 중복되는 주소를 프리픽스로 정의
 app.use("/post", postRouter);
+app.use("/posts", postsRouter);
 app.use("/user", userRouter);
 
 // 에러처리 미들웨어

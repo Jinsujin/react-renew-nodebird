@@ -32,35 +32,6 @@ export const initialState = {
   addCommentError: null
 };
 
-// 더미 데이터
-export const generateDummyPost = number =>
-  Array(number)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName()
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.image()
-        }
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName()
-          },
-          content: faker.lorem.sentence()
-        }
-      ]
-    }));
-
-// initialState.mainPosts = initialState.mainPosts.concat(generateDummyPost(10));
-
 /**
  * 액션 생성 함수
  */
@@ -100,11 +71,10 @@ const reducer = (state = initialState, action) => {
         draft.loadPostsError = null;
         break;
       case LOAD_POSTS_SUCCESS:
-        //action.data : 더미데이터가 들어있고 여기에 기존데이터 draft.mainPosts 와 합침
-        draft.mainPosts = action.data.concat(draft.mainPosts);
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
         // 게시글 50개 이상이면, 더이상 post 를 가져오지 않는다
+        draft.mainPosts = action.data.concat(draft.mainPosts);
         draft.hasMorePost = draft.mainPosts.length < 50;
         break;
       case LOAD_POSTS_FAILURE:
