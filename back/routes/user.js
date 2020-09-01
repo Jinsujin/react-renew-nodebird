@@ -145,4 +145,25 @@ router.get("/logout", isLoggedIn, (req, res, next) => {
   res.send("ok");
 });
 
+/**
+ * 닉네임 수정
+ */
+router.patch("nickname", isLoggedIn, async (req, res, next) => {
+  try {
+    // update(수정데이터, 조건)
+    await User.update(
+      {
+        nickname: req.body.nickname
+      },
+      {
+        where: { id: req.user.id }
+      }
+    );
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 module.exports = router;

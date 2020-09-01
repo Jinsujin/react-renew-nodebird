@@ -110,19 +110,18 @@ function* watchAddPost() {
 /*************** // End AddPost  ***************/
 
 /************** removePost ****************/
+// data : postId
 function removePostAPI(data) {
-  return axios.post("/api/post", data);
+  return axios.delete(`/post/${data}`);
 }
 
 function* removePost(action) {
   try {
-    // const result = yield call(removePostAPI, action.data);
-    yield delay(1000);
+    const result = yield call(removePostAPI, action.data);
 
     yield put({
       type: REMOVE_POST_SUCCESS,
-      //   data: result.data // 성공 결과
-      data: action.data // post id
+      data: result.data // 성공 결과
     });
     yield put({
       type: REMOVE_POST_OF_ME, // user 리듀서

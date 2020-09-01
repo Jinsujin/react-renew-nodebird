@@ -9,6 +9,7 @@ const FollowButton = ({ post }) => {
   const { me, followLoading, unfollowLoading } = useSelector(
     state => state.user
   );
+
   // 팔로잉여부:  나의 팔로잉한 사람들 목록중, 게시글 작성자 아이디가 포스트쓴 사람의 아이디와 같을때
   const isFollowing = me?.Followings.find(v => v.id === post.User.id);
   const onClickButton = useCallback(() => {
@@ -25,6 +26,11 @@ const FollowButton = ({ post }) => {
       });
     }
   }, [isFollowing]);
+
+  // 게시글 작성자의 아이디와 내 아이디가 같으면, 팔로우 버튼을 보이지 않음
+  if (post.User.id === me.id) {
+    return null;
+  }
 
   return (
     <Button loading={followLoading || unfollowLoading} onClick={onClickButton}>
