@@ -21,10 +21,65 @@ import {
   REMOVE_POST_FAILURE,
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
-  ADD_COMMENT_FAILURE
+  ADD_COMMENT_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  LIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_FAILURE,
+  UNLIKE_POST_SUCCESS
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 
+/************** unlikePost ****************/
+function unlikePostAPI() {
+  return axios.delete(`/post/${data}/unlike`);
+}
+
+function* unlikePost() {
+  try {
+    const result = yield call(unlikePostAPI);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data
+    });
+  } catch (e) {
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+/*************** // End unlikePost  ***************/
+/************** likePost ****************/
+// data: postId
+function likePostAPI() {
+  return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost() {
+  try {
+    const result = yield call(likePostAPI);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data // 생성된 게시글
+    });
+  } catch (e) {
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+/*************** // End likePost  ***************/
 /************** AddPost ****************/
 function addPostAPI(data) {
   return axios.post("/post", { content: data });
@@ -141,6 +196,8 @@ function* watchLoadPosts() {
 
 export default function* postSaga() {
   yield all([
+    fork(watchLikePost),
+    fork(watchUnlikePost),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchAddComment),
