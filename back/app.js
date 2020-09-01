@@ -28,7 +28,7 @@ passportConfig();
 app.use(
   cors({
     origin: true, // * 모든 주소에서의 요청 허용. TODO: 서비스 도메인으로 변경할것
-    credentials: false
+    credentials: true // 쿠키 전달 허용
   })
 );
 app.use(express.json()); // json 형식
