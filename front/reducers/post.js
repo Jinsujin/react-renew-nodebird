@@ -91,26 +91,6 @@ export const addComment = data => ({
   data
 });
 
-const dummyPost = data => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: "jinsu"
-  },
-  Images: [],
-  Comments: []
-});
-
-const dummyComment = data => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickname: "jinsu"
-  }
-});
-
 const reducer = (state = initialState, action) => {
   return produce(state, draft => {
     switch (action.type) {
@@ -138,7 +118,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
-        draft.mainPosts.unshift(dummyPost(action.data));
+        draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
         break;
@@ -167,11 +147,11 @@ const reducer = (state = initialState, action) => {
         draft.addCommentError = null;
         break;
       case ADD_COMMENT_SUCCESS: {
-        // 전달받은 data: { content: commentText, postId: post.id, userId: id }
+        // 전달받은 data: content, PostId, UserId
         // 1. 게시글 찾기
-        const post = draft.mainPosts.find(v => v.id === action.data.postId);
-        // 2. 게시글의 커멘트배열에 새로운 커맨트 하나 추가
-        post.Comments.unshift(dummyComment(action.data.content));
+        const post = draft.mainPosts.find(v => v.id === action.data.PostId);
+        // 2. 게시글의 커멘트배열에 새로운 댓글 넣기
+        post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         break;

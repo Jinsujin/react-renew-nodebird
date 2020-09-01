@@ -14,7 +14,8 @@ module.exports = () => {
 
   /**
    * 사용자의 정보를  user.id 를 사용해 User DB 에서부터 복구
-   * 로그인 성공후, 그 다음 요청부터 여기로 들어온다 (라우터 실행전 매법 실행)
+   * 로그인 성공후, 그 다음 요청부터 여기로 들어온다 (라우터 실행전 매번실행)
+   * req.user 로 접근이 가능케 한다
    */
   passport.deserializeUser(async (id, done) => {
     try {
