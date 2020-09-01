@@ -1,13 +1,30 @@
 import React, { useEffect } from "react";
 import Router from "next/router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Head from "next/head";
 import FollowList from "../components/FollowList";
 import NicknameEditForm from "../components/NickNameEditForm";
 import AppLayout from "../components/AppLayout";
 
+import {
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWINGS_REQUEST
+} from "../reducers/user";
+
 const Profile = () => {
+  const dispatch = useDispatch();
+
   const { me } = useSelector(state => state.user);
+
+  // 팔로잉, 팔로워 목록 불러오기
+  useEffect(() => {
+    dispatch({
+      type: LOAD_FOLLOWERS_REQUEST
+    });
+    dispatch({
+      type: LOAD_FOLLOWINGS_REQUEST
+    });
+  }, []);
 
   // 로그인 안한상태일때는 / 페이지로 이동
   useEffect(() => {

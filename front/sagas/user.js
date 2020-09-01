@@ -21,7 +21,16 @@ import {
   UNFOLLOW_FAILURE,
   CHANGE_NICKNAME_SUCCESS,
   CHANGE_NICKNAME_REQUEST,
-  CHANGE_NICKNAME_FAILURE
+  CHANGE_NICKNAME_FAILURE,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWINGS_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  REMOVE_FOLLOWER_SUCCESS,
+  REMOVE_FOLLOWER_FAILURE
 } from "../reducers/user";
 
 /************** loadUser ****************/
@@ -147,20 +156,19 @@ function* watchSignUp() {
 }
 /*************** // End signUp  ***************/
 /************** follow ****************/
-function followAPI() {
-  return axios.post("/api/follow");
+// data: userid
+function followAPI(data) {
+  return axios.patch(`/user/${data}/follow`);
 }
 
 function* follow(action) {
   try {
-    yield delay(1000);
-    // logInAPI을 통해 서버에서 요청받은 결과값을 받아올때까지 기다림(call)
-    // const result = yield call(followAPI);
+    const result = yield call(followAPI, action.data);
 
     yield put({
       type: FOLLOW_SUCCESS,
       // data: result.data // 성공 결과
-      data: action.data // 사용자 아이디
+      data: result.data // 사용자 아이디
     });
   } catch (e) {
     yield put({
@@ -175,19 +183,17 @@ function* watchFollow() {
 }
 /*************** // End follow  ***************/
 /************** unfollow ****************/
-function unfollowAPI() {
-  return axios.post("/api/unfollow");
+function unfollowAPI(data) {
+  return axios.delete(`/user/${data}/follow`);
 }
 
 function* unfollow(action) {
   try {
-    yield delay(1000);
-    // const result = yield call(unfollowAPI);
+    const result = yield call(unfollowAPI, action.data);
 
     yield put({
       type: UNFOLLOW_SUCCESS,
-      data: action.data // 사용자 아이디
-      //   data: result.data // 성공 결과
+      data: result.data // 성공 결과
     });
   } catch (e) {
     yield put({
@@ -226,9 +232,86 @@ function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 /*************** // End changeNickname  ***************/
+/************** loadFollwers ****************/
+function loadFollowersAPI(data) {
+  return axios.get("/user/followers", data);
+}
 
+function* loadFollowers(action) {
+  try {
+    const result = yield call(loadFollowersAPI, action.data);
+
+    yield put({
+      type: LOAD_FOLLOWERS_SUCCESS,
+      data: result.data // 성공 결과
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+/*************** // End loadFollwers  ***************/
+/************** loadFollwings ****************/
+function loadFollowingsAPI(data) {
+  return axios.get("/user/followings", data);
+}
+
+function* loadFollowings(action) {
+  try {
+    const result = yield call(loadFollowingsAPI, action.data);
+
+    yield put({
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data // 성공 결과
+    });
+  } catch (e) {
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+/*************** // End loadFollwings  ***************/
+/************** removeFollower ****************/
+function removeFollowerAPI(data) {
+  return axios.delete(`/user/follower/${data}`);
+}
+
+function* removeFollower(action) {
+  try {
+    const result = yield call(removeFollowerAPI, action.data);
+
+    yield put({
+      type: REMOVE_FOLLOWER_SUCCESS,
+      data: result.data // 성공 결과
+    });
+  } catch (e) {
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      error: e.response.data // 실패 결과
+    });
+  }
+}
+
+function* watchRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
+/*************** // End removeFollower  ***************/
 export default function* userSaga() {
   yield all([
+    fork(watchRemoveFollower),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
     fork(watchLoadUser),
     fork(watchChangeNickname),
     fork(watchLogIN),
