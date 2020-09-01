@@ -1,16 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cors = require("cors");
-const { User, Post } = require("../models"); // 구조분해 할당으로 db.User 를 가져옴
 const router = express.Router();
 const passport = require("passport");
+
+const { User, Post } = require("../models"); // 구조분해 할당으로 db.User 를 가져옴
+const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 /**
  * 로그인
  * POST /user/login
  */
 // authenticate(서버에러, 성공객체, 인포) -- done()으로 보낸 인자값들이 여기로 들어옴
-router.post("/login", (req, res, next) => {
+router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       console.error(err);
@@ -59,7 +61,7 @@ router.post("/login", (req, res, next) => {
  * POST /user/
  * req.body : {email, password, nickname}
  */
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     // 1.DB 에서 요청에서 온 email 이 이미 있는지 검사
     const exUser = await User.findOne({
@@ -92,7 +94,7 @@ router.post("/", async (req, res, next) => {
  * 세션과 쿠키를 지움
  * 로그인 이후부터는, req.user에서 부터 사용자 정보를 얻을수 있다
  */
-router.get("/user/logout", (req, res, next) => {
+router.get("/logout", isLoggedIn, (req, res, next) => {
   req.logout();
   req.session.destroy(); // 세션의 쿠키, 아이디를 없앰
   res.send("ok");
