@@ -4,7 +4,13 @@ const postRouter = require("./routes/post");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const app = express();
+const passport = require("passport");
 const passportConfig = require("./passport");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 db.sequelize
   .sync()
@@ -27,6 +33,16 @@ app.use(
 );
 app.use(express.json()); // json 형식
 app.use(express.urlencoded({ extended: true })); // form submit 했을때
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET // 해시코드를 만들기위한 키. 해킹되지 않도록 따로 관리해야 함
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
  * request: 요청

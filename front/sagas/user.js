@@ -79,13 +79,10 @@ function logOutAPI() {
 
 function* logOut() {
   try {
-    yield delay(1000);
-    // logInAPI을 통해 서버에서 요청받은 결과값을 받아올때까지 기다림(call)
-    // const result = yield call(logOutAPI);
+    const result = yield call(logOutAPI);
 
     yield put({
       type: LOG_OUT_SUCCESS
-      //   data: result.data // 성공 결과
     });
   } catch (e) {
     yield put({
