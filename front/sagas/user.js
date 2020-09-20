@@ -282,7 +282,9 @@ function* watchLoadFollowings() {
 }
 /*************** // End loadFollwings  ***************/
 /************** removeFollower ****************/
+// data: userId
 function removeFollowerAPI(data) {
+  console.log("removeFollwer API call - ", data);
   return axios.delete(`/user/follower/${data}`);
 }
 

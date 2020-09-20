@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 const FollowList = ({ header, data }) => {
   const dispatch = useDispatch();
   const onCancel = id => () => {
+    // 고차 함수 사용
     if (header === "팔로잉") {
       dispatch({
         type: UNFOLLOW_REQUEST,
@@ -15,7 +16,8 @@ const FollowList = ({ header, data }) => {
       });
     }
     dispatch({
-      type: REMOVE_FOLLOWER_REQUEST
+      type: REMOVE_FOLLOWER_REQUEST,
+      data: id
     });
   };
   return (

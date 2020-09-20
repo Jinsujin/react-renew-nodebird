@@ -127,11 +127,11 @@ router.post("/", isNotLoggedIn, async (req, res, next) => {
       nickname: req.body.nickname,
       password: hashedPassword
     });
+    res.status(200).send("ok");
   } catch (error) {
     console.log(error);
     next(error); // status 500
   }
-  res.status(200).send("ok");
 });
 
 /**
@@ -173,7 +173,7 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
 router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
   try {
     // 1. 유저가 있는지 검사
-    await User.findOne({ where: { id: req.params.userId } });
+    const user = await User.findOne({ where: { id: req.params.userId } });
     if (!user) {
       res.status(403).send("없는 사람을 팔로우 하려고 합니다");
     }

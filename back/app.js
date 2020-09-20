@@ -11,6 +11,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const path = require("path");
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use(
     credentials: true // 쿠키 전달 허용
   })
 );
+app.use("/", express.static(path.join(__dirname, "uploads")));
 app.use(express.json()); // json 형식
 app.use(express.urlencoded({ extended: true })); // form submit 했을때
 app.use(cookieParser(process.env.COOKIE_SECRET));
